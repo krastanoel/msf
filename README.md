@@ -4,7 +4,7 @@ The initial purpose of this repository is to share exploits and auxiliary module
 # Usage
 1. Clone this repository
 ```
-:~# git clone git@github.com:krastanoel/msf
+:~# git clone https://github.com/krastanoel/msf
 Cloning into 'msf'...
 remote: Enumerating objects: 19, done.
 remote: Counting objects: 100% (19/19), done.
