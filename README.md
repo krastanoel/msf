@@ -36,3 +36,4 @@ msf6 >
 
 # Modules
 * [Zoneminder Lang Exec](exploits/unix/webapp/zoneminder_lang_exec.rb)
+* [FreeSwitch Login Scanner](auxiliary/scanner/misc/freeswitch_event_socket_login.rb)
