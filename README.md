@@ -28,7 +28,8 @@ msf6 >
 3. Load this modules using `loadpath` command
 ```
 msf6 > loadpath ~/msf/boot ~/msf
-Loaded 1 modules:
+Loaded 2 modules:
+    1 auxiliary modules
     1 exploit modules
 msf6 >
 ```
