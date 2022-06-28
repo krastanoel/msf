@@ -12,32 +12,43 @@ class MetasploitModule < Msf::Auxiliary
   include Msf::Auxiliary::Report
   include Msf::Auxiliary::AuthBrute
 
-  def initialize(info={})
-    super(update_info(info,
-      'Name'           => 'FreeSWITCH Event Socket Login',
-      'Description'    => %{
-        This module tests FreeSWITCH Event Socket logins on a range of
-        machines and report successful attempts.
-      },
-      'Author'         =>
-        [
-          'krastanoel <krastanoel[at]gmail.com>'
+  def initialize(info = {})
+    super(
+      update_info(
+        info,
+        'Name' => 'FreeSWITCH Event Socket Login',
+        'Description' => %q{
+          This module tests FreeSWITCH Event Socket logins on a range of
+          machines and report successful attempts.
+        },
+        'Author' => [
+          'krastanoel'
         ],
-      'DefaultOptions' => { 'VERBOSE' => false },
-      'License'        => MSF_LICENSE
-    ))
+        'References' => [
+          ['URL', 'https://freeswitch.org/confluence/display/FREESWITCH/mod_event_socket']
+        ],
+        'DefaultOptions' => { 'VERBOSE' => false },
+        'License' => MSF_LICENSE,
+        'Notes' => {
+          'Stability' => [CRASH_SERVICE_RESTARTS],
+          'Reliability' => [],
+          'SideEffects' => []
+        }
+      )
+    )
 
     register_options(
       [
         Opt::RPORT(8021),
         OptString.new('PASSWORD', [false, 'FreeSWITCH event socket default password', 'ClueCon']),
         OptPath.new('PASS_FILE',
-          [
-            false,
-            'The file that contains a list of of probable passwords.',
-            File.join(Msf::Config.install_root, 'data', 'wordlists', 'unix_passwords.txt')
-          ])
-      ])
+                    [
+                      false,
+                      'The file that contains a list of of probable passwords.',
+                      File.join(Msf::Config.install_root, 'data', 'wordlists', 'unix_passwords.txt')
+                    ])
+      ]
+    )
 
     # freeswitch does not have an username, there's only password
     deregister_options(
@@ -72,7 +83,7 @@ class MetasploitModule < Msf::Auxiliary
     scanner.scan! do |result|
       credential_data = result.to_h
       credential_data.merge!(
-        module_fullname: self.fullname,
+        module_fullname: fullname,
         workspace_id: myworkspace_id
       )
 
@@ -94,7 +105,7 @@ class MetasploitModule < Msf::Auxiliary
     end
   end
 
-  def check_host(ip)
+  def check_host(_ip)
     connect
     banner = sock.get
     disconnect(sock)
