@@ -11,6 +11,7 @@ class MetasploitModule < Msf::Auxiliary
   include Msf::Auxiliary::Scanner
   include Msf::Auxiliary::Report
   include Msf::Auxiliary::AuthBrute
+  prepend Msf::Exploit::Remote::AutoCheck
 
   def initialize(info = {})
     super(
@@ -53,19 +54,12 @@ class MetasploitModule < Msf::Auxiliary
     # freeswitch does not have an username, there's only password
     deregister_options(
       'DB_ALL_CREDS', 'DB_ALL_USERS', 'DB_SKIP_EXISTING', 'BLANK_PASSWORDS',
-      'USERNAME', 'USER_AS_PASS', 'USERPASS_FILE', 'USER_FILE', 'PASSWORD_SPRAY'
+      'USERNAME', 'USER_AS_PASS', 'USERPASS_FILE', 'USER_FILE',
+      'PASSWORD_SPRAY', 'STOP_ON_SUCCESS'
     )
   end
 
   def run_host(ip)
-    @check = check_host(ip)
-    case @check.code
-    when 'safe'
-      fail_with(Failure::NoAccess, @check.reason)
-    when 'unknown'
-      fail_with(Failure::Unknown, @check.reason)
-    end
-
     cred_collection = Metasploit::Framework::PrivateCredentialCollection.new(
       password: datastore['PASSWORD'],
       pass_file: datastore['PASS_FILE']
@@ -76,7 +70,7 @@ class MetasploitModule < Msf::Auxiliary
       host: ip,
       port: rport,
       cred_details: cred_collection,
-      stop_on_success: datastore['STOP_ON_SUCCESS'],
+      stop_on_success: true, # this will have no effect due to the scanner behaviour when scanning without username
       connection_timeout: 10
     )
 
@@ -94,13 +88,13 @@ class MetasploitModule < Msf::Auxiliary
         create_credential_login(credential_data)
 
         if datastore['VERBOSE']
-          vprint_good("Login Successful: #{result.credential.private} (#{result.status}: #{result.proof.strip})")
+          vprint_good("Login Successful: #{result.credential.private} (#{result.status}: #{result.proof&.strip})")
         else
           print_good("Login Successful: #{result.credential.private}")
         end
       else
         invalidate_login(credential_data)
-        vprint_error("LOGIN FAILED: #{result.credential.private} (#{result.status}: #{result.proof.strip})")
+        vprint_error("LOGIN FAILED: #{result.credential.private} (#{result.status}: #{result.proof&.strip})")
       end
     end
   end
