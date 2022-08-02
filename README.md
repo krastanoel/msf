@@ -28,12 +28,24 @@ msf6 >
 3. Load this modules using `loadpath` command
 ```
 msf6 > loadpath ~/msf/boot ~/msf
-Loaded 2 modules:
-    1 auxiliary modules
+Loaded 3 modules:
+    2 auxiliary modules
     1 exploit modules
-msf6 >
+msf6 > reload_all
+[*] Reloading modules from all module paths...
+msf6 > search author:krastanoel
+
+Matching Modules
+================
+
+#  Name                                                  Disclosure Date  Rank       Check  Description
+-  ----                                                  ---------------  ----       -----  -----------
+0  auxiliary/scanner/http/cassandra_web_file_read                         normal     Yes    Cassandra Web File Read Vulnerability
+1  auxiliary/scanner/misc/freeswitch_event_socket_login                   normal     Yes    FreeSWITCH Event Socket Login
+2  exploit/unix/webapp/zoneminder_lang_exec              2022-04-27       excellent  Yes    ZoneMinder Language Settings Remote Code Execution
 ```
 
 # Modules
 * [Zoneminder Lang Exec](exploits/unix/webapp/zoneminder_lang_exec.rb)
 * [FreeSwitch Login Scanner](auxiliary/scanner/misc/freeswitch_event_socket_login.rb)
+* [Cassandra Web File Read](auxiliary/scanner/http/cassandra_web_file_read)
